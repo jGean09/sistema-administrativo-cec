@@ -1,0 +1,232 @@
+/* src/pages/LandingPage.css */
+
+.landing-wrapper {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #333;
+}
+
+/* Navbar */
+.navbar {
+  background: #fff;
+  padding: 0.8rem 8%;
+  box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.navbar-logo {
+  height: 55px;
+  width: auto;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.main-title {
+  color: #1b3d2f;
+  font-weight: 800;
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+
+.sub-title {
+  font-size: 0.8rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.login-pill {
+  color: #1b3d2f;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 10px 24px;
+  border: 2px solid #1b3d2f;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+}
+
+.login-pill:hover {
+  background: #1b3d2f;
+  color: #fff;
+}
+
+/* Hero Section com Fachada */
+.hero-section {
+  position: relative;
+  height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url('../../public/fachada.jpg'); /* Imagem da fachada da CEC */
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: #fff;
+  text-align: center;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(27, 61, 47, 0.75); /* Verde escuro translúcido */
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 0 20px;
+  max-width: 900px;
+}
+
+.hero-content h1 {
+  font-size: 3.5rem;
+  margin-bottom: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.hero-content p {
+  font-size: 1.3rem;
+  margin-bottom: 2.5rem;
+  opacity: 0.9;
+}
+
+.cta-button {
+  background: #4caf50;
+  color: white;
+  padding: 18px 40px;
+  border-radius: 8px;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 1.1rem;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+  transition: transform 0.2s, background 0.3s;
+}
+
+.cta-button:hover {
+  transform: translateY(-3px);
+  background: #43a047;
+}
+
+/* Notícias */
+.news-section {
+  padding: 100px 10%;
+  background: #fdfdfd;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.section-header h2 {
+  font-size: 2.2rem;
+  color: #1b3d2f;
+}
+
+.accent-line {
+  width: 60px;
+  height: 5px;
+  background: #4caf50;
+  margin: 15px auto;
+  border-radius: 10px;
+}
+
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 40px;
+}
+
+.public-news-card {
+  background: #fff;
+  padding: 35px;
+  border-radius: 16px;
+  border: 1px solid #eee;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+  transition: 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.public-news-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 50px rgba(0,0,0,0.1);
+}
+
+.news-category {
+  color: #2e7d32;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 15px;
+  letter-spacing: 1px;
+}
+
+.public-news-card h3 {
+  font-size: 1.4rem;
+  margin-bottom: 15px;
+  color: #111;
+}
+
+.public-news-card p {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 25px;
+}
+
+.news-footer {
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid #f5f5f5;
+}
+
+.news-date {
+  font-size: 0.85rem;
+  color: #999;
+}
+
+/* Footer */
+.landing-footer {
+  background: #111;
+  color: #fff;
+  padding: 60px 10%;
+  text-align: center;
+}
+
+.footer-content p {
+  margin: 5px 0;
+  opacity: 0.8;
+}
+
+.copyright {
+  margin-top: 30px !important;
+  font-size: 0.8rem;
+  color: #555;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .hero-content h1 { font-size: 2.2rem; }
+  .navbar-logo { height: 40px; }
+  .main-title { font-size: 1rem; }
+}

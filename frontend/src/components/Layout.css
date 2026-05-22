@@ -1,0 +1,141 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f4f4f2;
+}
+
+/* ─── Sidebar ─── */
+.sidebar {
+  width: 210px;
+  background: #1a3a2a;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.sb-logo {
+  padding: 1.25rem 1rem;
+  border-bottom: 0.5px solid rgba(255,255,255,0.1);
+}
+
+.sb-logo-circle {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 500; color: #fff;
+  margin-bottom: 8px;
+}
+
+.sb-logo-nome {
+  font-size: 12px; font-weight: 500; color: #fff; line-height: 1.4;
+}
+.sb-logo-sub { font-size: 10px; color: rgba(255,255,255,0.45); margin-top: 2px; }
+
+/* ─── Nav ─── */
+.sb-nav {
+  flex: 1; padding: 0.5rem 0;
+  display: flex; flex-direction: column;
+}
+
+.sb-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 10px 1rem;
+  font-size: 13px; color: rgba(255,255,255,0.6);
+  background: transparent; border: none;
+  cursor: pointer; text-align: left; width: 100%;
+  font-family: inherit;
+  transition: background 0.12s, color 0.12s;
+}
+.sb-item:hover:not(.ativo) {
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.88);
+}
+.sb-item.ativo {
+  background: rgba(255,255,255,0.13);
+  color: #fff; font-weight: 500;
+}
+.sb-icone { font-size: 15px; width: 18px; text-align: center; flex-shrink: 0; }
+
+/* ─── Usuário no rodapé ─── */
+.sb-usuario {
+  padding: 0.875rem 1rem;
+  border-top: 0.5px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; gap: 8px;
+}
+
+.sb-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 500; color: #fff;
+  flex-shrink: 0;
+}
+
+.sb-usuario-info { flex: 1; min-width: 0; }
+.sb-usuario-nome { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.9); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sb-usuario-cargo { font-size: 10px; color: rgba(255,255,255,0.45); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.sb-sair {
+  background: transparent; border: none; color: rgba(255,255,255,0.4);
+  font-size: 16px; cursor: pointer; padding: 4px;
+  flex-shrink: 0;
+  transition: color 0.12s;
+}
+.sb-sair:hover { color: rgba(255,255,255,0.85); }
+
+/* ─── Main ─── */
+.layout-main {
+  flex: 1; display: flex; flex-direction: column; min-width: 0;
+}
+
+.topbar {
+  background: #fff;
+  border-bottom: 0.5px solid #e8e8e8;
+  padding: 12px 1.5rem;
+  display: flex; align-items: center; gap: 12px;
+  position: sticky; top: 0; z-index: 10;
+}
+
+.btn-menu-mobile {
+  display: none; background: transparent; border: none;
+  font-size: 20px; cursor: pointer; color: #444;
+}
+
+.topbar-dep {
+  font-size: 13px; font-weight: 500;
+  background: #EAF3DE; color: #3B6D11;
+  padding: 3px 12px; border-radius: 20px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.topbar-cargo {
+  font-size: 11px; color: #5a5a5a;
+  background: #f0f0ee; padding: 2px 8px;
+  border-radius: 20px; font-weight: 400;
+}
+
+.layout-content { flex: 1; padding: 1.25rem 1.5rem; }
+
+/* ─── Overlay mobile ─── */
+.overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.4); z-index: 40;
+}
+
+/* ─── Responsivo ─── */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed; left: -210px; top: 0;
+    height: 100vh; z-index: 50;
+    transition: left 0.22s ease;
+  }
+  .sidebar.aberto { left: 0; }
+  .overlay { display: block; }
+  .btn-menu-mobile { display: block; }
+  .layout-content { padding: 1rem; }
+}
