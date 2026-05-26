@@ -5,6 +5,8 @@ const routes = require('./routes');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const path = require('path');
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Middlewares globais
 app.use(cors({

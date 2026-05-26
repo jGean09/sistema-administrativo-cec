@@ -13,6 +13,7 @@ const MENU_DIRETORIA = [
   { path: '/admin/socios', label: 'Gestão de Sócios', icone: '👥' },
   { path: '/admin/cadastrar-socio', label: 'Novo Cadastro', icone: '➕' },
   { path: '/perfil', label: 'Meu perfil', icone: '👤' },
+  { path: '/admin/noticias', label: 'Publicar Notícias', icone: '📢' },
 ];
 
 const iniciais = (nome = '') =>

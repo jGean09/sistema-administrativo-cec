@@ -3,29 +3,31 @@ import { Link } from 'react-router-dom';
 import api from '../services/api';
 import './LandingPage.css';
 
-// Link para o formulário externo do Google
-const LINK_INSCRICAO = "https://docs.google.com/forms/d/e/1FAIpQLSfxMGO9G5SIgzc49i0dJUXGxSt-PswSOZ7RprpwweRsw_CaFQ/viewform?usp=sharing&ouid=100203948435918790425"; 
+const LINK_INSCRICAO = "https://docs.google.com/forms/d/e/1FAIpQLSfxMGO9G5SIgzc49i0dJUXGxSt-PswSOZ7RprpwweRsw_CaFQ/viewform?usp=sharing&ouid=100203948435918790425";
+
+const COR_CATEGORIA = {
+  aviso: '#1565c0', edital: '#6a1b9a',
+  assembleia: '#e65100', portaria: '#2e7d32', escala: '#558b2f'
+};
 
 const LandingPage = () => {
   const [noticias, setNoticias] = useState([]);
   const [carregando, setCarregando] = useState(true);
+  const [modalAberto, setModalAberto] = useState(null);
 
   useEffect(() => {
-    // Busca notícias marcadas como públicas no backend
     api.get('/public/noticias')
-      .then(response => {
-        setNoticias(response.data);
-        setCarregando(false);
-      })
-      .catch(err => {
-        console.error("Erro ao carregar notícias públicas:", err);
-        setCarregando(false);
-      });
+      .then(res => setNoticias(Array.isArray(res.data) ? res.data.slice(0, 6) : []))
+      .catch(() => {})
+      .finally(() => setCarregando(false));
   }, []);
+
+  const abrirModal = (n) => setModalAberto(n);
+  const fecharModal = () => setModalAberto(null);
 
   return (
     <div className="landing-wrapper">
-      {/* Navbar com Logo e Nome alinhados */}
+      {/* NAVBAR */}
       <nav className="navbar">
         <div className="nav-content">
           <div className="brand">
@@ -39,7 +41,7 @@ const LandingPage = () => {
         </div>
       </nav>
 
-      {/* Hero Section com imagem de fundo da Casa */}
+      {/* HERO */}
       <header className="hero-section">
         <div className="hero-overlay"></div>
         <div className="hero-content">
@@ -53,7 +55,7 @@ const LandingPage = () => {
         </div>
       </header>
 
-      {/* Seção de Notícias Públicas (Editais/Informativos) */}
+      {/* NOTÍCIAS PÚBLICAS */}
       <section className="news-section">
         <div className="section-header">
           <h2>Informativos e Editais</h2>
@@ -62,32 +64,65 @@ const LandingPage = () => {
 
         {carregando ? (
           <div className="loading-msg">Carregando informativos...</div>
+        ) : noticias.length === 0 ? (
+          <div className="empty-news">
+            <p>Não há editais ou notícias públicas no momento.</p>
+          </div>
         ) : (
           <div className="news-grid">
-            {noticias.length > 0 ? noticias.map(noticia => (
-              <article key={noticia.id} className="public-news-card">
-                <span className="news-category">{noticia.categoria || 'Geral'}</span>
-                <h3>{noticia.titulo}</h3>
-                <p>{noticia.resumo}</p>
-                <div className="news-footer">
-                   <span className="news-date">
-                     {new Date(noticia.data_publicacao).toLocaleDateString('pt-BR')}
-                   </span>
+            {noticias.map(n => (
+              <article key={n.id} className="public-news-card" onClick={() => abrirModal(n)}>
+                {n.imagem_url && (
+                  <div className="card-img-wrap">
+                    <img src={`http://localhost:3001${n.imagem_url}`} alt="" />
+                  </div>
+                )}
+                <div className="card-body">
+                  <span className="card-badge" style={{ background: COR_CATEGORIA[n.categoria] || '#1b3d2f' }}>
+                    {n.categoria || 'Geral'}
+                  </span>
+                  <h3>{n.titulo}</h3>
+                  <p>{n.conteudo?.substring(0, 120)}{n.conteudo?.length > 120 ? '...' : ''}</p>
+                  <div className="news-footer">
+                    <span className="news-date">{new Date(n.created_at).toLocaleDateString('pt-BR')}</span>
+                    <span className="ver-mais">Ver mais →</span>
+                  </div>
                 </div>
               </article>
-            )) : (
-              <div className="empty-news">
-                <p>Não há editais ou notícias públicas no momento.</p>
-              </div>
-            )}
+            ))}
           </div>
         )}
       </section>
 
+      {/* MODAL */}
+      {modalAberto && (
+        <div className="modal-overlay" onClick={fecharModal}>
+          <div className="modal-box" onClick={e => e.stopPropagation()}>
+            <button className="modal-close" onClick={fecharModal}>✕</button>
+            {modalAberto.imagem_url && (
+              <img
+                src={`http://localhost:3001${modalAberto.imagem_url}`}
+                alt=""
+                className="modal-img"
+              />
+            )}
+            <div className="modal-body">
+              <span className="card-badge" style={{ background: COR_CATEGORIA[modalAberto.categoria] || '#1b3d2f' }}>
+                {modalAberto.categoria || 'Geral'}
+              </span>
+              <h2>{modalAberto.titulo}</h2>
+              <p className="modal-data">{new Date(modalAberto.created_at).toLocaleDateString('pt-BR')}</p>
+              <p className="modal-conteudo">{modalAberto.conteudo}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* FOOTER */}
       <footer className="landing-footer">
         <div className="footer-content">
           <p><strong>Casa do Estudante de Caicó - RN</strong></p>
-          <p>Rua Av. Seridó, Centro - Caicó</p>
+          <p>Travessa Padre Rafael, nº 71 – Centro | Caicó – RN</p>
           <p className="copyright">© 2026 Sistema Administrativo CEC</p>
         </div>
       </footer>

@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const upload = require('../config/upload');
 // Agrupe todos os middlewares aqui e remova os outros requires de auth lá de baixo
 const { 
   authMiddleware, 
@@ -27,10 +28,25 @@ router.put('/socios/:id', authMiddleware, socioController.atualizar);
 
 
 // ─── NOTÍCIAS ────────────────────────────────────────────────────────
-router.get('/public/noticias', noticiaController.listarPublicas); 
+router.get('/public/noticias', noticiaController.listarPublicas);
 router.get('/noticias', authMiddleware, noticiaController.listar);
-router.post('/noticias', authMiddleware, exigeDiretoria, noticiaController.publicar);
-router.put('/noticias/:id', authMiddleware, exigeDiretoria, noticiaController.editar);
+
+router.post('/noticias', authMiddleware, exigeDiretoria, (req, res, next) => {
+  upload.single('imagem')(req, res, (err) => {
+    if (err && err.code === 'LIMIT_FILE_SIZE') return res.status(400).json({ error: 'Imagem muito grande. Máximo 10MB.' });
+    if (err) return res.status(400).json({ error: err.message });
+    next();
+  });
+}, noticiaController.publicar);
+
+router.put('/noticias/:id', authMiddleware, exigeDiretoria, (req, res, next) => {
+  upload.single('imagem')(req, res, (err) => {
+    if (err && err.code === 'LIMIT_FILE_SIZE') return res.status(400).json({ error: 'Imagem muito grande. Máximo 10MB.' });
+    if (err) return res.status(400).json({ error: err.message });
+    next();
+  });
+}, noticiaController.editar);
+
 router.delete('/noticias/:id', authMiddleware, exigeDiretoria, noticiaController.excluir);
 
 // ─── FICHA DO SÓCIO ─────────────────────────────────────────────────

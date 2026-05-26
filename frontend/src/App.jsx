@@ -12,6 +12,8 @@ import Perfil from './pages/Perfil';
 import ListaSocios from './pages/admin/ListaSocios';
 import EditarSocio from './pages/admin/EditarSocio';
 import CadastroInterno from './pages/admin/CadastroInterno';
+import GerenciarNoticias from './pages/admin/GerenciarNoticias';
+
 
 // Componentes Globais
 import Layout from './components/Layout';
@@ -23,6 +25,7 @@ const RotaProtegida = ({ children }) => {
   
   if (carregando) return <div className="loading">Carregando...</div>;
   if (!usuario) return <Navigate to="/login" replace />;
+  
   
   return children;
 };
@@ -48,6 +51,7 @@ function AppRoutes() {
 
   return (
     <Routes>
+
       {/* 1. Rotas Públicas */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={
@@ -60,6 +64,12 @@ function AppRoutes() {
         {/* Página inicial do sistema */}
         <Route path="/home" element={<Home />} />
         <Route path="/perfil" element={<Perfil />} />
+
+        <Route path="/admin/noticias" element={
+          <RotaAdmin cargosPermitidos={['presidente', 'secretario', 'diretoria', 'admin']}>
+            <GerenciarNoticias />
+          </RotaAdmin>
+        } />
 
 
         {/* 3. Rotas de Gestão (Acesso restrito por cargo) */}
