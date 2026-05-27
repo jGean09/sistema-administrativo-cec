@@ -1,8 +1,13 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const pool = require('../config/database');
+// ============================================================
+// PADRÃO: MVC — Controller de Autenticação
+// SOLID S — Single Responsibility: só coordena as requisições
+//           de autenticação. Toda lógica está no authService.
+// GRASP Controller: recebe HTTP, chama serviço, responde.
+// ============================================================
 
-// Login: email + CPF como senha padrão
+const authService = require('../services/authService');
+
+// ─── LOGIN ───────────────────────────────────────────────────
 const login = async (req, res) => {
   const { email, senha } = req.body;
 
@@ -11,99 +16,54 @@ const login = async (req, res) => {
   }
 
   try {
-    const result = await pool.query(
-      `SELECT id, nome, email, cpf, senha_hash, tipo_usuario, cargo, 
-              departamento, status_socio, matricula
-       FROM socios WHERE email = $1`,
-      [email.toLowerCase().trim()]
-    );
-
-    if (result.rows.length === 0) {
-      return res.status(401).json({ error: 'E-mail ou senha incorretos.' });
-    }
-
-    const socio = result.rows[0];
-
-    if (socio.status_socio === 'suspenso') {
-      return res.status(403).json({ 
-        error: 'Conta suspensa. Entre em contato com a diretoria da CEC.' 
+    const resultado = await authService.autenticar(email, senha);
+    return res.json(resultado);
+  } catch (err) {
+    console.error('[login]', err);
+    // Trata erro de conta suspensa separadamente — status 403
+    if (err.message === 'SUSPENSO') {
+      return res.status(403).json({
+        error: 'Conta suspensa. Entre em contato com a diretoria da CEC.'
       });
     }
-
-    const senhaCorreta = await bcrypt.compare(senha, socio.senha_hash);
-    if (!senhaCorreta) {
-      return res.status(401).json({ error: 'E-mail ou senha incorretos.' });
+    // Erros de credencial retornam 401
+    if (err.message === 'E-mail ou senha incorretos.') {
+      return res.status(401).json({ error: err.message });
     }
-
-    const token = jwt.sign(
-      { id: socio.id, tipo_usuario: socio.tipo_usuario },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
-    );
-
-    return res.json({
-      token,
-      usuario: {
-        id: socio.id,
-        nome: socio.nome,
-        email: socio.email,
-        matricula: socio.matricula,
-        tipo_usuario: socio.tipo_usuario,
-        cargo: socio.cargo,
-        departamento: socio.departamento,
-      }
-    });
-  } catch (err) {
-    console.error('Erro no login:', err);
     return res.status(500).json({ error: 'Erro interno do servidor.' });
   }
 };
 
-// Retorna dados do usuário logado
+// ─── PERFIL ──────────────────────────────────────────────────
 const perfil = async (req, res) => {
   try {
-    const result = await pool.query(
-      `SELECT id, matricula, nome, data_nascimento, genero, naturalidade, cpf, rg,
-              nome_pai, nome_mae, telefone, email, endereco_logradouro, endereco_numero,
-              endereco_bairro, endereco_cidade, endereco_uf, endereco_cep,
-              instituicao, escolaridade, periodo_serie, ano_inclusao,
-              departamento, status_socio, data_inclusao, cargo, tipo_usuario,
-              alergias, medicacao, doenca_cronica, deficiencia, tratamento_medico
-       FROM socios WHERE id = $1`,
-      [req.usuario.id]
-    );
-
-    return res.json(result.rows[0]);
+    const dados = await authService.buscarPerfil(req.usuario.id);
+    return res.json(dados);
   } catch (err) {
+    console.error('[perfil]', err);
     return res.status(500).json({ error: 'Erro ao buscar perfil.' });
   }
 };
 
-// Trocar senha
+// ─── TROCAR SENHA ────────────────────────────────────────────
 const trocarSenha = async (req, res) => {
-  const { senha_atual, nova_senha } = req.body;
+  const { senhaAtual, novaSenha } = req.body;
 
-  if (!senha_atual || !nova_senha) {
+  if (!senhaAtual || !novaSenha) {
     return res.status(400).json({ error: 'Preencha todos os campos.' });
   }
 
-  if (nova_senha.length < 6) {
-    return res.status(400).json({ error: 'A nova senha deve ter ao menos 6 caracteres.' });
-  }
-
   try {
-    const result = await pool.query('SELECT senha_hash FROM socios WHERE id = $1', [req.usuario.id]);
-    const senhaCorreta = await bcrypt.compare(senha_atual, result.rows[0].senha_hash);
-
-    if (!senhaCorreta) {
-      return res.status(401).json({ error: 'Senha atual incorreta.' });
-    }
-
-    const novaHash = await bcrypt.hash(nova_senha, 10);
-    await pool.query('UPDATE socios SET senha_hash = $1 WHERE id = $2', [novaHash, req.usuario.id]);
-
+    await authService.trocarSenha(req.usuario.id, senhaAtual, novaSenha);
     return res.json({ message: 'Senha alterada com sucesso.' });
   } catch (err) {
+    console.error('[trocar senha]', err);
+    if (err.message === 'Senha atual incorreta.') {
+      return res.status(401).json({ error: err.message });
+    }
+    if (err.message.includes('6 caracteres')) {
+      return res.status(400).json({ error: err.message });
+    }
     return res.status(500).json({ error: 'Erro ao alterar senha.' });
   }
 };
