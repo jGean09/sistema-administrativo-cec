@@ -51,8 +51,53 @@ FRONTEND_URL=http://localhost:3000
 Senha inicial de cada sócio = CPF sem pontos e traço
 
 ## Funcionalidades
-- Autenticação JWT
-- Gestão de sócios (cadastro, edição, filtros)
-- Geração de ficha individual em PDF
-- Controle de acesso por cargo
-- Landing page pública
+
+### Autenticação e Segurança
+- Login com e-mail + senha (JWT)
+- Senha padrão = CPF sem pontos e traço (primeiro acesso)
+- Troca de senha pelo perfil
+- Controle de acesso por cargo 
+- Rotas protegidas por middleware JWT
+
+### Gestão de Sócios
+- Cadastro completo (dados pessoais, filiação, endereço, acadêmico, saúde)
+- Edição de todos os campos
+- Listagem com filtros: departamento, status, busca por nome
+- Ordenação: nome A→Z, nome Z→A, mais novo, mais velho, matrícula
+- Badges de resumo: total, ativos, masculino, feminino
+- Geração automática de matrícula (ANO + sequência + dígito)
+
+### Ficha Individual PDF
+- Geração automática no modelo oficial da CEC
+- Cabeçalho com logo, endereços e CNPJ
+- Todos os campos da ficha: dados pessoais, filiação, endereço, acadêmico, saúde
+- Assinaturas e rodapé com documentação exigida
+- Acessível direto pela listagem e pela tela de edição
+
+### Notícias e Comunicados
+- CRUD completo (publicar, editar, excluir)
+- Categorias: Aviso Geral, Edital, Assembleia, Portaria, Escala de Limpeza
+- Visibilidade: Pública (todos) ou Exclusiva para sócios
+- Upload de imagem (até 10MB)
+- Feed estilo rede social com modal de leitura completa
+- Filtros por categoria no feed interno
+
+### Páginas Públicas (sem login)
+- Landing page com hero, foto da casa e botão de inscrição
+- Seção de editais e notícias públicas na landing page
+- Link direto para formulário de inscrição (Google Forms)
+
+### Área do Sócio (login obrigatório)
+- Feed de notícias internas com filtros por categoria
+- Widget de horários por departamento (Masculino / Feminino)
+- Widget de informações de mensalidade
+- Perfil completo com troca de senha
+
+### Padrões de Projeto Aplicados
+- **MVC**: separação clara de Model, View e Controller
+- **Service Layer**: regras de negócio isoladas dos controllers
+- **Strategy**: permissões por cargo sem if/else encadeado
+- **Facade**: chamadas HTTP centralizadas no frontend
+- **GRASP Expert/Creator/Controller**: responsabilidades bem definidas
+- **SOLID S**: cada arquivo tem uma única responsabilidade
+- **SOLID O**: atualização dinâmica de campos sem modificar o código
