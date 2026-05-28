@@ -33,7 +33,7 @@ router.get('/noticias', authMiddleware, noticiaController.listar);
 
 router.post('/noticias', authMiddleware, exigeDiretoria, (req, res, next) => {
   upload.single('imagem')(req, res, (err) => {
-    if (err && err.code === 'LIMIT_FILE_SIZE') return res.status(400).json({ error: 'Imagem muito grande. Máximo 10MB.' });
+    if (err?.code === 'LIMIT_FILE_SIZE') return res.status(400).json({ error: 'Imagem muito grande. Máximo 10MB.' });
     if (err) return res.status(400).json({ error: err.message });
     next();
   });
@@ -41,7 +41,7 @@ router.post('/noticias', authMiddleware, exigeDiretoria, (req, res, next) => {
 
 router.put('/noticias/:id', authMiddleware, exigeDiretoria, (req, res, next) => {
   upload.single('imagem')(req, res, (err) => {
-    if (err && err.code === 'LIMIT_FILE_SIZE') return res.status(400).json({ error: 'Imagem muito grande. Máximo 10MB.' });
+    if (err?.code === 'LIMIT_FILE_SIZE') return res.status(400).json({ error: 'Imagem muito grande. Máximo 10MB.' });
     if (err) return res.status(400).json({ error: err.message });
     next();
   });
