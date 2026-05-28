@@ -26,8 +26,11 @@ app.use(express.urlencoded({ extended: true }));
 // Log de requisições (desenvolvimento)
 if (process.env.NODE_ENV === 'development') {
   app.use((req, res, next) => {
-    console.log(`[${new Date().toLocaleTimeString()}] ${req.method} ${req.path}`);
-    next();
+    const safePath = req.path.replace(/[\r\n\t]/g, '');
+    console.log(
+      `[${new Date().toLocaleTimeString()}] ${req.method} ${safePath}`
+  );
+  next();
   });
 }
 
