@@ -12,7 +12,8 @@
 // ============================================================
 
 const PDFDocument = require('pdfkit');
-const path = require('path');
+const path = require('node:path');
+
 
 // Caminho da logo — relativo ao projeto para funcionar
 // em qualquer máquina (não depende de caminho absoluto)

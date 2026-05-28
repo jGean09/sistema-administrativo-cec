@@ -11,7 +11,7 @@
 //           ele sabe gerar matrícula, verificar duplicidade
 //           e montar o objeto completo antes de salvar.
 // ============================================================
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 const bcrypt = require('bcryptjs');
 const pool = require('../config/database');
 
