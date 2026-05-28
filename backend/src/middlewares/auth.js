@@ -4,31 +4,48 @@ const pool = require('../config/database');
 const authMiddleware = async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
-if (!authHeader?.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Token de autenticação não fornecido.' });
+  if (!authHeader?.startsWith('Bearer ')) {
+    return res.status(401).json({
+      error: 'Token de autenticação não fornecido.'
+    });
   }
 
   const token = authHeader.split(' ')[1];
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
     const result = await pool.query(
-      'SELECT id, nome, email, tipo_usuario, cargo, departamento, status_socio FROM socios WHERE id = $1',
+      `SELECT id, nome, email, tipo_usuario, cargo,
+              departamento, status_socio
+       FROM socios
+       WHERE id = $1`,
       [decoded.id]
     );
 
     if (result.rows.length === 0) {
-      return res.status(401).json({ error: 'Usuário não encontrado.' });
+      return res.status(401).json({
+        error: 'Usuário não encontrado.'
+      });
     }
 
     if (result.rows[0].status_socio === 'suspenso') {
-      return res.status(403).json({ error: 'Sua conta está suspensa. Entre em contato com a diretoria.' });
+      return res.status(403).json({
+        error: 'Sua conta está suspensa. Entre em contato com a diretoria.'
+      });
     }
 
     req.usuario = result.rows[0];
-    next();
+
+    return next();
+
   } catch (err) {
-    return res.status(401).json({ error: 'Token inválido ou expirado.' });
+
+    console.error('Erro na autenticação:', err.message);
+
+    return res.status(401).json({
+      error: 'Token inválido ou expirado.'
+    });
   }
 };
 
