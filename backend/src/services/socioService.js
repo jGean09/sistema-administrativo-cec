@@ -11,7 +11,6 @@
 //           ele sabe gerar matrícula, verificar duplicidade
 //           e montar o objeto completo antes de salvar.
 // ============================================================
-import crypto from 'node:crypto';
 const bcrypt = require('bcryptjs');
 const pool = require('../config/database');
 
@@ -28,7 +27,7 @@ const gerarMatricula = async () => {
     [`${ano}%`]
   );
   const seq = parseInt(result.rows[0].count) + 1;
-  const digito = crypto.randomInt(10, 100);
+  const digito = Math.floor(Math.random() * 90 + 10);
   return `${ano}${String(seq).padStart(4, '0')}-${digito}`;
 };
 

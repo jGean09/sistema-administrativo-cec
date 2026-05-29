@@ -1,5 +1,5 @@
 const multer = require('multer');
-const path = require('node:path');
+const path = require('path');
 const fs = require('node:fs');
 
 const dir = path.join(__dirname, '../../uploads');
