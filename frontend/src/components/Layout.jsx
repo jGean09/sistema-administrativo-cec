@@ -14,6 +14,7 @@ const MENU_DIRETORIA = [
   { path: '/admin/cadastrar-socio', label: 'Novo Cadastro', icone: '➕' },
   { path: '/perfil', label: 'Meu perfil', icone: '👤' },
   { path: '/admin/noticias', label: 'Publicar Notícias', icone: '📢' },
+  { path: '/admin/email', label: 'Enviar E-mail', icone: '📧' },
 ];
 
 const iniciais = (nome = '') =>

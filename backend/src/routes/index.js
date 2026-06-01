@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const upload = require('../config/upload');
+const emailController = require('../controllers/emailController');
+
+
 // Agrupe todos os middlewares aqui e remova os outros requires de auth lá de baixo
 const { 
   authMiddleware, 
@@ -52,4 +55,9 @@ router.delete('/noticias/:id', authMiddleware, exigeDiretoria, noticiaController
 // ─── FICHA DO SÓCIO ─────────────────────────────────────────────────
 const fichaController = require('../controllers/fichaController');
 router.get('/socios/:id/ficha', fichaController.gerarFicha);
+
+// ─── E-MAIL ──────────────────────────────────────────────────
+// Sem upload aqui — o controller já gerencia o multer internamente
+router.get('/email/destinatarios', authMiddleware, exigeDiretoria, emailController.listarDestinatarios);
+router.post('/email/enviar', authMiddleware, exigeDiretoria, emailController.enviar);
 module.exports = router;
