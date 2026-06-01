@@ -17,7 +17,7 @@ const path = require('node:path');
 
 // Caminho da logo — relativo ao projeto para funcionar
 // em qualquer máquina (não depende de caminho absoluto)
-const LOGO_PATH = path.join(__dirname, '../../../frontend/public/logo.png');
+const LOGO_PATH = path.join(__dirname, '../../../frontend/src/assets/logo.png');
 
 // ─── FUNÇÕES AUXILIARES DE FORMATAÇÃO ────────────────────────
 // Responsabilidade: transformar dados brutos em texto legível.
