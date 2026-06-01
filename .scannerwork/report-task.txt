@@ -1,0 +1,7 @@
+organization=jgean09
+projectKey=jgean09_sistema-administrativo-cec
+serverUrl=https://sonarcloud.io
+serverVersion=8.0.0.88736
+dashboardUrl=https://sonarcloud.io/dashboard?id=jgean09_sistema-administrativo-cec
+ceTaskId=AZ5xMl96RZ-Sd_vaOCcc
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AZ5xMl96RZ-Sd_vaOCcc

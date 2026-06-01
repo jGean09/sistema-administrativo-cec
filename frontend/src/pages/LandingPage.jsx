@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import api from '../services/api';
 import './LandingPage.css';
 
+import logoCEC from '../assets/logo.png'; 
+
 const LINK_INSCRICAO = "https://docs.google.com/forms/d/e/1FAIpQLSfxMGO9G5SIgzc49i0dJUXGxSt-PswSOZ7RprpwweRsw_CaFQ/viewform?usp=sharing&ouid=100203948435918790425";
 
 const COR_CATEGORIA = {
@@ -31,7 +33,8 @@ const LandingPage = () => {
       <nav className="navbar">
         <div className="nav-content">
           <div className="brand">
-            <img src="/logo.png" alt="Logo CEC" className="navbar-logo" />
+            {/* 👇 2. Usando a variável da logo importada no src */}
+            <img src={logoCEC} alt="Logo CEC" className="navbar-logo" />
             <div className="brand-text">
               <span className="main-title">Casa do Estudante de Caicó</span>
               <span className="sub-title">Desde 1960</span>

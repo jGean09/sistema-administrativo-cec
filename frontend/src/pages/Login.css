@@ -1,0 +1,228 @@
+/* ─── Fundo da Tela ─── */
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f2f5;
+  padding: 1.5rem;
+}
+
+/* ─── Cartão Principal ─── */
+.login-split-card {
+  display: flex;
+  width: 100%;
+  max-width: 900px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  overflow: hidden; /* Garante que os cantos arredondados cortem o fundo verde */
+}
+
+/* ─── Lado Esquerdo (Verde) ─── */
+.login-left {
+  flex: 1;
+  background-color: #1b3d2f;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+}
+
+.login-left-content {
+  text-align: center;
+  max-width: 320px;
+}
+
+.logo-circle {
+  width: 80px;
+  height: 80px;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.inst-title {
+  font-size: 20px;
+  margin: 0 0 5px 0;
+  font-weight: 700;
+}
+
+.inst-subtitle {
+  font-size: 14px;
+  color: #a3b8af;
+  margin: 0 0 2.5rem 0;
+  font-weight: 400;
+}
+
+.features-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.features-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: #e8f0ec;
+}
+
+.feature-icon {
+  font-size: 18px;
+}
+
+/* ─── Lado Direito (Branco) ─── */
+.login-right {
+  flex: 1.2;
+  padding: 4rem 3.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.login-right-header {
+  margin-bottom: 2rem;
+}
+
+.login-right-header h2 {
+  font-size: 26px;
+  color: #111;
+  margin: 0 0 6px 0;
+}
+
+.login-right-header p {
+  font-size: 15px;
+  color: #666;
+  margin: 0;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.input-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+}
+
+.input-group input {
+  padding: 12px 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 15px;
+  color: #333;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #1b3d2f;
+  box-shadow: 0 0 0 3px rgba(27, 61, 47, 0.1);
+}
+
+.hint-text {
+  font-size: 11px;
+  color: #888;
+  margin-top: 2px;
+}
+
+.error-message {
+  background-color: #fef2f2;
+  color: #991b1b;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #fca5a5;
+  font-size: 13px;
+  text-align: center;
+}
+
+.btn-entrar {
+  background-color: #1b3d2f;
+  color: #fff;
+  border: none;
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 0.5rem;
+  font-family: inherit;
+}
+
+.btn-entrar:hover {
+  background-color: #143020;
+}
+
+.btn-entrar:disabled {
+  background-color: #93a59d;
+  cursor: not-allowed;
+}
+
+/* ─── Rodapé do Formulário ─── */
+.login-right-footer {
+  margin-top: 2rem;
+}
+
+.login-right-footer p {
+  font-size: 14px;
+  color: #555;
+  margin: 0 0 6px 0;
+}
+
+.link-cadastro {
+  color: #1b3d2f;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.link-cadastro:hover {
+  text-decoration: underline;
+}
+
+.hint-text-footer {
+  font-size: 12px !important;
+  color: #888 !important;
+}
+
+/* ─── Responsividade para Celulares ─── */
+@media (max-width: 850px) {
+  .login-split-card {
+    flex-direction: column;
+  }
+  
+  .login-left {
+    padding: 2.5rem 1.5rem;
+  }
+
+  .features-list {
+    display: none; /* Esconde a lista no celular para economizar espaço */
+  }
+
+  .login-right {
+    padding: 2.5rem 1.5rem;
+  }
+}

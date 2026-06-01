@@ -1,0 +1,122 @@
+/* ─── Contêiner Principal ─── */
+.perfil-container {
+  padding: 24px;
+  max-width: 700px;
+  margin: 0 auto; /* Centraliza caso a tela seja maior */
+}
+
+.perfil-title {
+  margin-bottom: 4px;
+  color: #111;
+}
+
+.perfil-subtitle {
+  color: #666;
+  margin-bottom: 24px;
+  font-size: 14px;
+}
+
+/* ─── Cartões (Cards) ─── */
+.perfil-card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #eee;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.perfil-card h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #1b3d2f;
+  font-size: 16px;
+}
+
+/* ─── Grid de Dados Pessoais ─── */
+.perfil-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.perfil-grid-full {
+  grid-column: 1 / -1;
+}
+
+.perfil-label {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 4px;
+  display: block;
+  font-weight: 500;
+}
+
+.perfil-info-box {
+  padding: 10px 12px;
+  background: #f5f5f5;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #333;
+  border: 1px solid transparent;
+}
+
+/* ─── Formulário de Alteração de Senha ─── */
+.perfil-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.perfil-input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  box-sizing: border-box;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  background-color: #fbfbfc;
+}
+
+.perfil-input:focus {
+  outline: none;
+  border-color: #1b3d2f;
+  background-color: #fff;
+  box-shadow: 0 0 0 3px rgba(27, 61, 47, 0.1);
+}
+
+.btn-salvar {
+  padding: 12px;
+  background: #1b3d2f;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  font-family: inherit;
+  transition: background-color 0.2s ease;
+  margin-top: 8px;
+}
+
+.btn-salvar:hover {
+  background: #143020;
+}
+
+.btn-salvar:disabled {
+  background: #93a59d;
+  cursor: not-allowed;
+}
+
+/* ─── Responsividade ─── */
+@media (max-width: 600px) {
+  .perfil-container {
+    padding: 16px;
+  }
+  
+  .perfil-grid {
+    grid-template-columns: 1fr; /* Coloca tudo em uma coluna no telemóvel */
+  }
+}
