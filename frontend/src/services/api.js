@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || '/api',
+  // Puxa a URL oficial da nuvem. Se não achar, usa o localhost:3001 como plano B de desenvolvimento
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:3001',
   timeout: 10000,
 });
 
