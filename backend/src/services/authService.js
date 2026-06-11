@@ -97,9 +97,9 @@ const autenticar = async (email, senha) => {
 
   // Regra de negócio 3: senha incorreta
   const senhaCorreta = await bcrypt.compare(senha, socio.senha_hash);
-//  if (!senhaCorreta) {
-//    throw new Error('E-mail ou senha incorretos.');
-//  }
+  if (!senhaCorreta) {
+    throw new Error('E-mail ou senha incorretos.');
+  }
 
   // Gera token JWT com id e tipo_usuario
   const token = jwt.sign(
