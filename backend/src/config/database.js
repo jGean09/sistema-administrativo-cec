@@ -1,21 +1,21 @@
 const { Pool } = require('pg');
 require('dotenv').config();
 
+// O nosso X9 atualizado para a nova URL:
+console.log("🔍 VERIFICANDO URL:", process.env.DATABASE_URL ? "URL carregada com sucesso!" : "FALHA: URL não encontrada no .env");
+
 const pool = new Pool({
-  host: process.env.DB_HOST || 'localhost',
-  port: process.env.DB_PORT || 5432,
-  database: process.env.DB_NAME || 'cec_sistema',
-  user: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD,
+  // Usando apenas a URL inteira
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false } 
 });
 
 pool.on('connect', () => {
-  console.log('Conectado ao banco de dados PostgreSQL');
+  console.log('🔥 Conectado ao Supabase com sucesso!');
 });
 
 pool.on('error', (err) => {
   console.error('Erro na conexão com o banco:', err);
-  process.exit(-1);
 });
 
 module.exports = pool;

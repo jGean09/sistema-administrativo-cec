@@ -55,6 +55,9 @@ router.delete('/noticias/:id', authMiddleware, exigeDiretoria, noticiaController
 // ─── FICHA DO SÓCIO ─────────────────────────────────────────────────
 const fichaController = require('../controllers/fichaController');
 router.get('/socios/:id/ficha', fichaController.gerarFicha);
+// ─── DECLARAÇÃO DO SÓCIO ────────────────────────────────────────────
+const declaracaoController = require('../controllers/declaracaoController');
+router.get('/socios/:id/declaracao', declaracaoController.gerarDeclaracao);
 
 // ─── E-MAIL ──────────────────────────────────────────────────
 // Sem upload aqui — o controller já gerencia o multer internamente
