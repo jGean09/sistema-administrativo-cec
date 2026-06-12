@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../../services/api';
+import './GerenciarNoticias.css'; // Import do novo CSS
 
 const CATEGORIAS = [
   { value: 'aviso', label: 'Aviso Geral', visibilidade: 'publica' },
@@ -10,6 +11,9 @@ const CATEGORIAS = [
 ];
 
 const INITIAL = { titulo: '', conteudo: '', categoria: 'aviso', visibilidade: 'publica' };
+
+// Remove o '/api' da URL base para acessar a pasta pública de imagens no Render
+const BASE_URL = process.env.REACT_APP_API_URL ? process.env.REACT_APP_API_URL.replace('/api', '') : 'http://localhost:3001';
 
 export default function GerenciarNoticias() {
   const [noticias, setNoticias] = useState([]);
@@ -71,12 +75,12 @@ export default function GerenciarNoticias() {
   const labelCategoria = { aviso: 'Aviso', edital: 'Edital', assembleia: 'Assembleia', portaria: 'Portaria', escala: 'Escala' };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '900px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h2 style={{ margin: 0 }}>Gerenciar Notícias</h2>
+    <div className="noticias-container">
+      <div className="noticias-header">
+        <h2 className="noticias-title">Gerenciar Notícias</h2>
         <button
+          className="btn-nova-noticia"
           onClick={() => { setMostrarForm(!mostrarForm); setForm(INITIAL); setEditandoId(null); }}
-          style={{ padding: '10px 20px', background: '#1b3d2f', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}
         >
           {mostrarForm ? 'Cancelar' : '+ Nova Notícia'}
         </button>
@@ -84,42 +88,40 @@ export default function GerenciarNoticias() {
 
       {/* FORMULÁRIO */}
       {mostrarForm && (
-        <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #eee', padding: '24px', marginBottom: '24px' }}>
-          <h3 style={{ marginTop: 0 }}>{editandoId ? 'Editar Notícia' : 'Nova Notícia'}</h3>
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+        <div className="form-container">
+          <h3 className="form-title">{editandoId ? 'Editar Notícia' : 'Nova Notícia'}</h3>
+          <form onSubmit={handleSubmit} className="noticias-form">
             <div>
-              <label style={{ fontSize: '13px', color: '#555' }}>Título *</label>
+              <label className="form-label">Título *</label>
               <input
+                className="form-input"
                 value={form.titulo} onChange={e => setForm({ ...form, titulo: e.target.value })} required
-                style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #ddd', fontSize: '14px', boxSizing: 'border-box', marginTop: '4px' }}
               />
             </div>
             <div>
-              <label style={{ fontSize: '13px', color: '#555' }}>Categoria *</label>
+              <label className="form-label">Categoria *</label>
               <select
+                className="form-input"
                 value={form.categoria} onChange={handleCategoria}
-                style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #ddd', fontSize: '14px', marginTop: '4px' }}
               >
                 {CATEGORIAS.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
               </select>
-              <small style={{ color: '#888' }}>
+              <small className="form-help-text">
                 Visibilidade: <strong>{form.visibilidade === 'publica' ? '🌐 Pública (todos veem)' : '🔒 Apenas sócios'}</strong>
               </small>
             </div>
             <div>
-              <label style={{ fontSize: '13px', color: '#555' }}>Conteúdo *</label>
+              <label className="form-label">Conteúdo *</label>
               <textarea
+                className="form-input form-textarea"
                 value={form.conteudo} onChange={e => setForm({ ...form, conteudo: e.target.value })} required rows={6}
-                style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #ddd', fontSize: '14px', boxSizing: 'border-box', marginTop: '4px', resize: 'vertical' }}
               />
             </div>
             <div>
-              <label style={{ fontSize: '13px', color: '#555' }}>Imagem (opcional)</label>
-              <input type="file" accept="image/*" onChange={e => setImagem(e.target.files[0])}
-                style={{ display: 'block', marginTop: '4px' }} />
+              <label className="form-label">Imagem (opcional)</label>
+              <input type="file" accept="image/*" onChange={e => setImagem(e.target.files[0])} className="form-file-input" />
             </div>
-            <button type="submit" disabled={loading}
-              style={{ padding: '12px', background: '#1b3d2f', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', fontSize: '14px' }}>
+            <button type="submit" disabled={loading} className="btn-submit">
               {loading ? 'Salvando...' : editandoId ? 'Salvar Alterações' : 'Publicar Notícia'}
             </button>
           </form>
@@ -127,34 +129,31 @@ export default function GerenciarNoticias() {
       )}
 
       {/* LISTA */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-        {noticias.length === 0 && <p style={{ color: '#999', textAlign: 'center' }}>Nenhuma notícia publicada.</p>}
+      <div className="noticias-list">
+        {noticias.length === 0 && <p className="empty-text">Nenhuma notícia publicada.</p>}
         {noticias.map(n => (
-          <div key={n.id} style={{ background: '#fff', borderRadius: '12px', border: '1px solid #eee', padding: '16px', display: 'flex', gap: '16px' }}>
+          <div key={n.id} className="noticia-card">
             {n.imagem_url && (
-              <img src={`http://localhost:3001${n.imagem_url}`} alt=""
-                style={{ width: '100px', height: '70px', objectFit: 'cover', borderRadius: '8px', flexShrink: 0 }} />
+              <img src={`${BASE_URL}${n.imagem_url}`} alt="" className="noticia-img" />
             )}
-            <div style={{ flex: 1 }}>
-              <div style={{ display: 'flex', gap: '8px', marginBottom: '6px', flexWrap: 'wrap' }}>
-                <span style={{ background: corCategoria[n.categoria] || '#666', color: '#fff', padding: '2px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 'bold' }}>
+            <div className="noticia-content">
+              <div className="noticia-badges">
+                <span className="badge-base" style={{ background: corCategoria[n.categoria] || '#666', color: '#fff' }}>
                   {labelCategoria[n.categoria] || n.categoria}
                 </span>
-                <span style={{ background: n.visibilidade === 'publica' ? '#e3f2fd' : '#fff3e0', color: n.visibilidade === 'publica' ? '#1565c0' : '#e65100', padding: '2px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 'bold' }}>
+                <span className={`badge-base ${n.visibilidade === 'publica' ? 'badge-publica' : 'badge-socios'}`}>
                   {n.visibilidade === 'publica' ? '🌐 Pública' : '🔒 Sócios'}
                 </span>
               </div>
-              <strong style={{ fontSize: '15px' }}>{n.titulo}</strong>
-              <p style={{ color: '#666', fontSize: '13px', margin: '4px 0' }}>{n.conteudo.substring(0, 120)}...</p>
-              <small style={{ color: '#999' }}>Por {n.autor_nome} — {new Date(n.created_at).toLocaleDateString('pt-BR')}</small>
+              <strong className="noticia-titulo">{n.titulo}</strong>
+              <p className="noticia-resumo">{n.conteudo.substring(0, 120)}...</p>
+              <small className="noticia-meta">Por {n.autor_nome} — {new Date(n.created_at).toLocaleDateString('pt-BR')}</small>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', justifyContent: 'center' }}>
-              <button onClick={() => handleEditar(n)}
-                style={{ border: 'none', background: '#f0f4f0', color: '#1b3d2f', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px' }}>
+            <div className="noticia-actions">
+              <button onClick={() => handleEditar(n)} className="btn-edit">
                 Editar
               </button>
-              <button onClick={() => handleExcluir(n.id)}
-                style={{ border: 'none', background: '#ffeaea', color: '#c62828', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px' }}>
+              <button onClick={() => handleExcluir(n.id)} className="btn-delete">
                 Excluir
               </button>
             </div>

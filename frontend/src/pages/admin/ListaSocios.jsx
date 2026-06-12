@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
+import './ListaSocios.css';
 
 export default function ListaSocios() {
   const [socios, setSocios] = useState([]);
@@ -60,57 +61,50 @@ export default function ListaSocios() {
   const totalAtivo = socios.filter(s => s.status_socio === 'ativo').length;
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className="lista-container">
 
       {/* CABEÇALHO */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+      <div className="lista-header">
         <div>
-          <h2 style={{ margin: 0 }}>Gestão de Sócios</h2>
-          <p style={{ margin: '4px 0 0', color: '#666', fontSize: '13px' }}>
+          <h2 className="lista-title">Gestão de Sócios</h2>
+          <p className="lista-subtitle">
             {sociosFiltrados.length} de {socios.length} sócios exibidos
           </p>
         </div>
         <button
+          className="btn-novo-socio"
           onClick={() => navigate('/admin/cadastrar-socio')}
-          style={{ padding: '10px 20px', background: '#1b3d2f', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}
         >
           + Novo Sócio
         </button>
       </div>
 
       {/* BADGES DE RESUMO */}
-      <div style={{ display: 'flex', gap: '12px', marginBottom: '16px', flexWrap: 'wrap' }}>
+      <div className="badges-container">
         {[
           { label: 'Total', valor: socios.length, cor: '#1b3d2f' },
           { label: 'Ativos', valor: totalAtivo, cor: '#2e7d32' },
           { label: 'Masculino', valor: totalMasc, cor: '#1565c0' },
           { label: 'Feminino', valor: totalFem, cor: '#ad1457' },
         ].map(b => (
-          <div key={b.label} style={{
-            background: b.cor, color: '#fff', borderRadius: '8px',
-            padding: '8px 16px', fontSize: '13px', fontWeight: 'bold'
-          }}>
+          <div key={b.label} className="admin-badge" style={{ backgroundColor: b.cor }}>
             {b.label}: {b.valor}
           </div>
         ))}
       </div>
 
       {/* FILTROS */}
-      <div style={{
-        display: 'flex', gap: '10px', marginBottom: '16px',
-        background: '#f8f9f8', padding: '14px', borderRadius: '10px',
-        flexWrap: 'wrap'
-      }}>
+      <div className="filtros-container">
         <input
           placeholder="Buscar por nome..."
           value={busca}
           onChange={e => setBusca(e.target.value)}
-          style={{ flex: '1', minWidth: '180px', padding: '8px 12px', borderRadius: '6px', border: '1px solid #ddd', fontSize: '14px' }}
+          className="filtro-input"
         />
         <select
           value={filtroDep}
           onChange={e => setFiltroDep(e.target.value)}
-          style={{ padding: '8px 12px', borderRadius: '6px', border: '1px solid #ddd', fontSize: '14px' }}
+          className="filtro-select"
         >
           <option value="">Todos os dep.</option>
           <option value="masculino">Masculino</option>
@@ -119,7 +113,7 @@ export default function ListaSocios() {
         <select
           value={filtroStatus}
           onChange={e => setFiltroStatus(e.target.value)}
-          style={{ padding: '8px 12px', borderRadius: '6px', border: '1px solid #ddd', fontSize: '14px' }}
+          className="filtro-select"
         >
           <option value="">Todos os status</option>
           <option value="ativo">Ativo</option>
@@ -129,7 +123,7 @@ export default function ListaSocios() {
         <select
           value={ordenacao}
           onChange={e => setOrdenacao(e.target.value)}
-          style={{ padding: '8px 12px', borderRadius: '6px', border: '1px solid #ddd', fontSize: '14px' }}
+          className="filtro-select"
         >
           <option value="nome_asc">Nome A→Z</option>
           <option value="nome_desc">Nome Z→A</option>
@@ -139,8 +133,8 @@ export default function ListaSocios() {
         </select>
         {(busca || filtroDep || filtroStatus || ordenacao !== 'nome_asc') && (
           <button
+            className="btn-limpar-filtros"
             onClick={() => { setBusca(''); setFiltroDep(''); setFiltroStatus(''); setOrdenacao('nome_asc'); }}
-            style={{ padding: '8px 12px', borderRadius: '6px', border: '1px solid #ddd', background: '#fff', cursor: 'pointer', fontSize: '13px', color: '#666' }}
           >
             Limpar filtros
           </button>
@@ -148,46 +142,42 @@ export default function ListaSocios() {
       </div>
 
       {/* TABELA */}
-      <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #eee', overflow: 'hidden' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead style={{ background: '#f8f9f8' }}>
-            <tr style={{ textAlign: 'left', fontSize: '13px', color: '#666' }}>
-              <th style={{ padding: '14px 15px' }}>Nome</th>
-              <th style={{ padding: '14px 15px' }}>Departamento</th>
-              <th style={{ padding: '14px 15px' }}>Idade</th>
-              <th style={{ padding: '14px 15px' }}>Status</th>
-              <th style={{ padding: '14px 15px' }}>Ações</th>
+      <div className="tabela-container">
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Departamento</th>
+              <th>Idade</th>
+              <th>Status</th>
+              <th>Ações</th>
             </tr>
           </thead>
           <tbody>
             {carregando ? (
-              <tr><td colSpan="5" style={{ padding: '30px', textAlign: 'center', color: '#999' }}>Carregando...</td></tr>
+              <tr><td colSpan="5" className="td-empty">Carregando...</td></tr>
             ) : sociosFiltrados.length === 0 ? (
-              <tr><td colSpan="5" style={{ padding: '30px', textAlign: 'center', color: '#999' }}>Nenhum sócio encontrado.</td></tr>
+              <tr><td colSpan="5" className="td-empty">Nenhum sócio encontrado.</td></tr>
             ) : sociosFiltrados.map(s => (
-              <tr key={s.id} style={{ borderBottom: '1px solid #eee' }}>
-                <td style={{ padding: '14px 15px', fontWeight: '500' }}>{s.nome}</td>
-                <td style={{ padding: '14px 15px', textTransform: 'capitalize' }}>{s.departamento}</td>
-                <td style={{ padding: '14px 15px', color: '#666' }}>{calcIdade(s.data_nascimento)} anos</td>
-                <td style={{ padding: '14px 15px' }}>
-                  <span style={{
-                    padding: '3px 10px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold',
-                    background: s.status_socio === 'ativo' ? '#e8f5e9' : s.status_socio === 'suspenso' ? '#fff3e0' : '#ffebee',
-                    color: s.status_socio === 'ativo' ? '#2e7d32' : s.status_socio === 'suspenso' ? '#e65100' : '#c62828'
-                  }}>
+              <tr key={s.id}>
+                <td className="td-nome">{s.nome}</td>
+                <td className="td-dep">{s.departamento}</td>
+                <td className="td-idade">{calcIdade(s.data_nascimento)} anos</td>
+                <td>
+                  <span className={`status-badge status-${s.status_socio}`}>
                     {s.status_socio}
                   </span>
                 </td>
-                <td style={{ padding: '14px 15px', display: 'flex', gap: '12px' }}>
+                <td className="td-acoes">
                   <button
+                    className="btn-acao-editar"
                     onClick={() => navigate(`/admin/socios/editar/${s.id}`)}
-                    style={{ border: 'none', background: 'none', color: '#1b3d2f', cursor: 'pointer', textDecoration: 'underline', fontSize: '14px' }}
                   >
                     Editar
                   </button>
                   <button
+                    className="btn-acao-pdf"
                     onClick={() => window.open(`${process.env.REACT_APP_API_URL}/socios/${s.id}/ficha`, '_blank')}
-                    style={{ border: 'none', background: 'none', color: '#8B0000', cursor: 'pointer', textDecoration: 'underline', fontSize: '14px' }}
                   >
                     Ficha PDF
                   </button>

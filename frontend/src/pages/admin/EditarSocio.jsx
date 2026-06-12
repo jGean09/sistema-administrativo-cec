@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
-import './CadastroInterno.css';
+import './EditarSocio.css';
 
 export default function EditarSocio() {
   const { id } = useParams();
@@ -38,28 +38,28 @@ export default function EditarSocio() {
     }
   };
 
-  if (!form) return <div style={{ padding: '20px' }}>Carregando dados do sócio...</div>;
+  if (!form) return <div className="admin-loading">Carregando dados do sócio...</div>;
 
   return (
     <div className="admin-container">
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' }}>
+      <header className="admin-header-flex">
         <div>
           <h2>Editar Sócio</h2>
-          <p style={{ color: '#666', marginTop: '4px' }}>Matrícula: <strong>{form.matricula}</strong></p>
+          <p className="admin-subtitle">Matrícula: <strong>{form.matricula}</strong></p>
         </div>
 
         {/* ── Botões de PDF ── */}
-        <div style={{ display: 'flex', gap: '10px' }}>
+        <div className="admin-header-actions">
           <button
+            className="btn-pdf-ficha"
             onClick={() => window.open(`${process.env.REACT_APP_API_URL}/socios/${id}/ficha`, '_blank')}
-            style={{ padding: '10px 18px', background: '#8B0000', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontWeight: 'bold' }}
           >
             Imprimir Ficha PDF
           </button>
 
           <button
+            className="btn-pdf-declaracao"
             onClick={() => window.open(`${process.env.REACT_APP_API_URL}/socios/${id}/declaracao`, '_blank')}
-            style={{ padding: '10px 18px', background: '#1a5276', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontWeight: 'bold' }}
           >
             Declaração PDF
           </button>
