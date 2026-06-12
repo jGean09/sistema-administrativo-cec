@@ -15,12 +15,21 @@ const PORT = process.env.PORT || 3001;
 
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
-// CORS configurado para aceitar o ambiente de dev local e a produção na Vercel
+// CORS configurado com lista VIP definitiva
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://sistema-administrativo-cec.vercel.app'
+];
+
 app.use(cors({
-  origin: [
-    'http://localhost:3000',
-    'https://sistema-administrativo-cec.vercel.app'
-  ], 
+  origin: function (origin, callback) {
+    // Permite chamadas sem origin (como do Postman) ou as que estão na lista
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Bloqueado pelo CORS'));
+    }
+  },
   credentials: true,
 }));
 
