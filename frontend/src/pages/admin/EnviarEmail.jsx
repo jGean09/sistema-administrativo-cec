@@ -6,7 +6,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
-import './CadastroInterno.css'; // Importando o CSS global do admin
+import './EnviarEmail.css';
 
 export default function EnviarEmail() {
   const { usuario } = useAuth();

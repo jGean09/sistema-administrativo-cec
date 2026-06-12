@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
-import './CadastroInterno.css'; // Importando o CSS com as novas classes
+import './ListaSocios.css';
 
 export default function ListaSocios() {
   const [socios, setSocios] = useState([]);

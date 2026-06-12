@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
-import './CadastroInterno.css';
+import './EditarSocio.css';
 
 export default function EditarSocio() {
   const { id } = useParams();
