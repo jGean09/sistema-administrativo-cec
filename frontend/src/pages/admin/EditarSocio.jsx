@@ -51,14 +51,14 @@ export default function EditarSocio() {
         {/* ── Botões de PDF ── */}
         <div style={{ display: 'flex', gap: '10px' }}>
           <button
-            onClick={() => window.open(`http://localhost:3001/api/socios/${id}/ficha`, '_blank')}
+            onClick={() => window.open(`${process.env.REACT_APP_API_URL}/socios/${id}/ficha`, '_blank')}
             style={{ padding: '10px 18px', background: '#8B0000', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontWeight: 'bold' }}
           >
             Imprimir Ficha PDF
           </button>
 
           <button
-            onClick={() => window.open(`http://localhost:3001/api/socios/${id}/declaracao`, '_blank')}
+            onClick={() => window.open(`${process.env.REACT_APP_API_URL}/socios/${id}/declaracao`, '_blank')}
             style={{ padding: '10px 18px', background: '#1a5276', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontWeight: 'bold' }}
           >
             Declaração PDF
