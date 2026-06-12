@@ -1,47 +1,73 @@
+// server.js — versão corrigida e blindada
+
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const helmet = require('helmet'); // Importante para segurança
+const helmet = require('helmet');
 const path = require('path');
 const routes = require('./routes');
 
 const app = express();
-
-// Proteção básica de cabeçalhos HTTP
-app.use(helmet()); 
-app.disable('x-powered-by');
-
 const PORT = process.env.PORT || 3001;
 
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+// Log de diagnóstico — confirma qual valor está carregado no ambiente do Render
+console.log('✅ FRONTEND_URL carregado:', process.env.FRONTEND_URL);
+console.log('✅ NODE_ENV:', process.env.NODE_ENV);
 
-// CORS blindado: aceita a variável do Render, o Localhost e a Vercel
 const origensPermitidas = [
-  process.env.FRONTEND_URL,
   'http://localhost:3000',
-  'https://sistema-administrativo-cec.vercel.app'
-];
+  'http://localhost:3001',
+  'https://sistema-administrativo-cec.vercel.app',
+  // FRONTEND_URL como fallback (caso esteja correto no painel do Render)
+  process.env.FRONTEND_URL,
+].filter(Boolean); // Remove valores undefined/null
 
-app.use(cors({
+console.log('✅ Origens permitidas:', origensPermitidas);
+
+const corsOptions = {
   origin: function (origin, callback) {
-    if (!origin || origensPermitidas.includes(origin)) {
+    // Permite requisições sem origin (Postman, curl, health checks)
+    if (!origin) return callback(null, true);
+
+    if (origensPermitidas.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Bloqueado pelo CORS'));
+      console.warn(`🚫 CORS bloqueou origem: ${origin}`);
+      callback(new Error(`Origem não permitida pelo CORS: ${origin}`));
     }
   },
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+};
+
+// ⚠️ CORS deve vir ANTES do Helmet
+app.use(cors(corsOptions));
+
+// Responde ao preflight OPTIONS de forma explícita (resolve conflitos com Helmet)
+app.options('*', cors(corsOptions));
+
+// Helmet depois do CORS
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' }, // Evita conflito com uploads
 }));
 
-// Rota de Health Check (útil para o Render não derrubar seu app)
+app.disable('x-powered-by');
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', ambiente: process.env.NODE_ENV });
+  res.json({
+    status: 'ok',
+    ambiente: process.env.NODE_ENV,
+    frontend_url: process.env.FRONTEND_URL, // Expõe para diagnóstico
+    origens: origensPermitidas,
+  });
 });
 
-// Rotas da API
 app.use('/api', routes);
 
-// Handlers de Erro
 app.use((req, res) => res.status(404).json({ error: 'Rota não encontrada.' }));
 app.use((err, req, res, next) => {
   console.error(err.stack);
