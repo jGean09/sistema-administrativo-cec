@@ -6,6 +6,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
+import './CadastroInterno.css'; // Importando o CSS global do admin
 
 export default function EnviarEmail() {
   const { usuario } = useAuth();
@@ -17,7 +18,7 @@ export default function EnviarEmail() {
   const [status, setStatus] = useState('ativo');
   const [assunto, setAssunto] = useState('');
   const [mensagem, setMensagem] = useState('');
-  const [anexos, setAnexos] = useState(null); // Novo estado para os anexos
+  const [anexos, setAnexos] = useState(null);
   const [enviando, setEnviando] = useState(false);
   const [resultado, setResultado] = useState(null);
 
@@ -53,18 +54,14 @@ export default function EnviarEmail() {
     setEnviando(true);
     setResultado(null);
 
-    // Substituindo JSON por FormData para suportar arquivos
     const formData = new FormData();
     formData.append('tipo', tipo);
     formData.append('departamento', departamento);
     formData.append('status', status);
     formData.append('assunto', assunto);
     formData.append('mensagem', mensagem);
-    
-    // Arrays precisam ser stringificados no FormData
     formData.append('ids', JSON.stringify(selecionados)); 
 
-    // Adiciona os arquivos ao FormData, se houver
     if (anexos) {
       for (let i = 0; i < anexos.length; i++) {
         formData.append('anexos', anexos[i]);
@@ -72,7 +69,6 @@ export default function EnviarEmail() {
     }
 
     try {
-      // Axios configura automaticamente os headers (multipart/form-data) quando enviamos FormData
       const res = await api.post('/email/enviar', formData);
       
       setResultado(res.data);
@@ -80,7 +76,6 @@ export default function EnviarEmail() {
       setMensagem('');
       setSelecionados([]);
       setAnexos(null);
-      // Limpa o input de arquivo visualmente
       document.getElementById('input-anexos').value = ""; 
     } catch (err) {
       alert(err.response?.data?.error || 'Erro ao enviar e-mail.');
@@ -90,43 +85,37 @@ export default function EnviarEmail() {
   };
 
   return (
-    <div style={{ padding: '24px', maxWidth: '900px' }}>
-      <h2 style={{ marginBottom: '4px' }}>Enviar E-mail</h2>
-      <p style={{ color: '#666', marginBottom: '24px' }}>
+    <div className="email-container">
+      <h2 className="email-title">Enviar E-mail</h2>
+      <p className="email-subtitle">
         Remetente: <strong>casaestudantecaico@gmail.com</strong>
       </p>
 
       {/* RESULTADO DO ENVIO */}
       {resultado && (
-        <div style={{
-          background: resultado.erros === 0 ? '#e8f5e9' : '#fff3e0',
-          border: `1px solid ${resultado.erros === 0 ? '#a5d6a7' : '#ffcc02'}`,
-          borderRadius: '10px', padding: '16px', marginBottom: '24px'
-        }}>
+        <div className={`email-alert ${resultado.erros === 0 ? 'success' : 'warning'}`}>
           <strong>{resultado.message}</strong>
           {resultado.erros > 0 && (
-            <p style={{ margin: '4px 0 0', fontSize: '13px', color: '#e65100' }}>
+            <p className="email-alert-error-msg">
               {resultado.erros} e-mail(s) falharam.
             </p>
           )}
         </div>
       )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+      <div className="email-grid">
 
         {/* COLUNA ESQUERDA — Destinatários */}
-        <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #eee', padding: '20px' }}>
-          <h3 style={{ marginTop: 0 }}>Destinatários</h3>
+        <div className="email-card">
+          <h3>Destinatários</h3>
 
           {/* Tipo de envio */}
-          <div style={{ marginBottom: '14px' }}>
-            <label style={{ fontSize: '13px', color: '#555', display: 'block', marginBottom: '6px' }}>
-              Tipo de envio
-            </label>
+          <div className="email-form-group">
+            <label className="email-label">Tipo de envio</label>
             <select
               value={tipo}
               onChange={e => setTipo(e.target.value)}
-              style={{ width: '100%', padding: '8px', borderRadius: '6px', border: '1px solid #ddd', fontSize: '14px' }}
+              className="email-select"
             >
               <option value="selecionados">Sócios selecionados</option>
               <option value="todos">Todos os sócios ativos</option>
@@ -137,14 +126,12 @@ export default function EnviarEmail() {
 
           {/* Filtro de departamento */}
           {tipo === 'departamento' && (
-            <div style={{ marginBottom: '14px' }}>
-              <label style={{ fontSize: '13px', color: '#555', display: 'block', marginBottom: '6px' }}>
-                Departamento
-              </label>
+            <div className="email-form-group">
+              <label className="email-label">Departamento</label>
               <select
                 value={departamento}
                 onChange={e => setDepartamento(e.target.value)}
-                style={{ width: '100%', padding: '8px', borderRadius: '6px', border: '1px solid #ddd' }}
+                className="email-select"
               >
                 <option value="masculino">Masculino</option>
                 <option value="feminino">Feminino</option>
@@ -154,14 +141,12 @@ export default function EnviarEmail() {
 
           {/* Filtro de status */}
           {tipo === 'status' && (
-            <div style={{ marginBottom: '14px' }}>
-              <label style={{ fontSize: '13px', color: '#555', display: 'block', marginBottom: '6px' }}>
-                Status
-              </label>
+            <div className="email-form-group">
+              <label className="email-label">Status</label>
               <select
                 value={status}
                 onChange={e => setStatus(e.target.value)}
-                style={{ width: '100%', padding: '8px', borderRadius: '6px', border: '1px solid #ddd' }}
+                className="email-select"
               >
                 <option value="ativo">Ativos</option>
                 <option value="inativo">Inativos</option>
@@ -177,38 +162,27 @@ export default function EnviarEmail() {
                 placeholder="Buscar sócio..."
                 value={busca}
                 onChange={e => setBusca(e.target.value)}
-                style={{ width: '100%', padding: '8px', borderRadius: '6px', border: '1px solid #ddd', fontSize: '14px', boxSizing: 'border-box', marginBottom: '8px' }}
+                className="email-input"
+                style={{ marginBottom: '8px' }} // Mantido inline apenas o margin dinâmico temporário se precisar
               />
-              <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+              <div className="email-actions-row">
                 <button
                   type="button"
-                  onClick={selecionarTodos}
-                  style={{ fontSize: '12px', padding: '4px 10px', border: '1px solid #ddd', borderRadius: '6px', cursor: 'pointer', background: '#f5f5f5' }}
+                  onClick={selecionados.length === sociosFiltrados.length ? limparSelecao : selecionarTodos}
+                  className="btn-email-action"
                 >
-                  Selecionar todos
+                  {selecionados.length === sociosFiltrados.length ? 'Desmarcar todos' : 'Selecionar todos'}
                 </button>
-                <button
-                  type="button"
-                  onClick={limparSelecao}
-                  style={{ fontSize: '12px', padding: '4px 10px', border: '1px solid #ddd', borderRadius: '6px', cursor: 'pointer', background: '#f5f5f5' }}
-                >
-                  Limpar
-                </button>
-                <span style={{ fontSize: '12px', color: '#888', alignSelf: 'center' }}>
+                <span className="email-selecionados-count">
                   {selecionados.length} selecionado(s)
                 </span>
               </div>
-              <div style={{ maxHeight: '300px', overflowY: 'auto', border: '1px solid #eee', borderRadius: '8px' }}>
+              <div className="email-list-container">
                 {sociosFiltrados.map(s => (
                   <div
                     key={s.id}
                     onClick={() => toggleSelecionado(s.id)}
-                    style={{
-                      padding: '10px 12px', cursor: 'pointer',
-                      borderBottom: '1px solid #f5f5f5',
-                      background: selecionados.includes(s.id) ? '#e8f5e9' : '#fff',
-                      display: 'flex', alignItems: 'center', gap: '10px'
-                    }}
+                    className={`email-list-item ${selecionados.includes(s.id) ? 'selected' : 'unselected'}`}
                   >
                     <input
                       type="checkbox"
@@ -217,8 +191,8 @@ export default function EnviarEmail() {
                       onClick={e => e.stopPropagation()}
                     />
                     <div>
-                      <div style={{ fontSize: '13px', fontWeight: '500' }}>{s.nome}</div>
-                      <div style={{ fontSize: '11px', color: '#888' }}>{s.email}</div>
+                      <div className="email-item-name">{s.nome}</div>
+                      <div className="email-item-email">{s.email}</div>
                     </div>
                   </div>
                 ))}
@@ -228,7 +202,7 @@ export default function EnviarEmail() {
 
           {/* Resumo para outros tipos */}
           {tipo !== 'selecionados' && (
-            <div style={{ background: '#f0f4f0', borderRadius: '8px', padding: '12px', fontSize: '13px', color: '#444' }}>
+            <div className="email-summary-box">
               {tipo === 'todos' && `Será enviado para todos os ${socios.filter(s => s.status_socio === 'ativo').length} sócios ativos.`}
               {tipo === 'departamento' && `Será enviado para sócios do dep. ${departamento}.`}
               {tipo === 'status' && `Será enviado para sócios com status: ${status}.`}
@@ -237,53 +211,47 @@ export default function EnviarEmail() {
         </div>
 
         {/* COLUNA DIREITA — Mensagem e Anexos */}
-        <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #eee', padding: '20px' }}>
-          <h3 style={{ marginTop: 0 }}>Mensagem</h3>
-          <form onSubmit={handleEnviar} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+        <div className="email-card">
+          <h3>Mensagem</h3>
+          <form onSubmit={handleEnviar} className="email-form-layout">
             <div>
-              <label style={{ fontSize: '13px', color: '#555', display: 'block', marginBottom: '6px' }}>
-                Assunto *
-              </label>
+              <label className="email-label">Assunto *</label>
               <input
                 value={assunto}
                 onChange={e => setAssunto(e.target.value)}
                 required
                 placeholder="Ex: Reunião de assembleia — 15/06"
-                style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #ddd', fontSize: '14px', boxSizing: 'border-box' }}
+                className="email-input"
               />
             </div>
             <div>
-              <label style={{ fontSize: '13px', color: '#555', display: 'block', marginBottom: '6px' }}>
-                Mensagem *
-              </label>
+              <label className="email-label">Mensagem *</label>
               <textarea
                 value={mensagem}
                 onChange={e => setMensagem(e.target.value)}
                 required
                 rows={8}
                 placeholder="Digite a mensagem aqui..."
-                style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #ddd', fontSize: '14px', boxSizing: 'border-box', resize: 'vertical' }}
+                className="email-textarea"
               />
             </div>
 
             {/* NOVO CAMPO: ANEXOS */}
             <div>
-              <label style={{ fontSize: '13px', color: '#555', display: 'block', marginBottom: '6px' }}>
-                Anexos (Opcional)
-              </label>
+              <label className="email-label">Anexos (Opcional)</label>
               <input
                 id="input-anexos"
                 type="file"
                 multiple
                 onChange={e => setAnexos(e.target.files)}
-                style={{ width: '100%', padding: '8px', borderRadius: '6px', border: '1px solid #ddd', fontSize: '14px', boxSizing: 'border-box', background: '#fbfbfc' }}
+                className="email-file-input"
               />
-              <span style={{ fontSize: '11px', color: '#888', marginTop: '4px', display: 'block' }}>
+              <span className="email-help-text">
                 Você pode selecionar múltiplos arquivos (PDFs, Imagens, Documentos).
               </span>
             </div>
 
-            <div style={{ background: '#f9f9f9', borderRadius: '8px', padding: '12px', fontSize: '12px', color: '#666' }}>
+            <div className="email-preview-box">
               <strong>Preview do remetente:</strong><br />
               De: Casa do Estudante de Caicó &lt;casaestudantecaico@gmail.com&gt;<br />
               Assinado por: {usuario?.nome}
@@ -292,12 +260,7 @@ export default function EnviarEmail() {
             <button
               type="submit"
               disabled={enviando}
-              style={{
-                padding: '12px', background: enviando ? '#ccc' : '#1b3d2f',
-                color: '#fff', border: 'none', borderRadius: '8px',
-                cursor: enviando ? 'not-allowed' : 'pointer',
-                fontWeight: 'bold', fontSize: '14px'
-              }}
+              className={`btn-enviar-email ${enviando ? 'disabled' : 'active'}`}
             >
               {enviando ? 'Enviando...' : '📧 Enviar E-mail'}
             </button>
