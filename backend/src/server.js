@@ -15,14 +15,14 @@ const PORT = process.env.PORT || 3001;
 
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
-// CORS configurado para aceitar apenas sua URL de produção
+// CORS configurado para aceitar o ambiente de dev local e a produção na Vercel
 app.use(cors({
-  origin: process.env.FRONTEND_URL, 
+  origin: [
+    'http://localhost:3000',
+    'https://sistema-administrativo-cec.vercel.app'
+  ], 
   credentials: true,
 }));
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 // Rota de Health Check (útil para o Render não derrubar seu app)
 app.get('/health', (req, res) => {
