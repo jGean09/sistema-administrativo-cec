@@ -336,4 +336,36 @@
   .main-title { font-size: 1rem; }
   .news-grid { grid-template-columns: 1fr; }
   .modal-box { border-radius: 12px; }
+
+  .hero-section {
+    height: auto;
+    padding: 80px 20px;
+    background-attachment: scroll;
+  }
+
+  .hero-content {
+    padding: 0 10px;
+  }
+
+  .hero-content p {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .cta-button {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 16px 20px;
+    font-size: 1rem;
+    box-sizing: border-box;
+  }
+
+  .navbar {
+    padding: 0.8rem 4%;
+  }
+
+  .brand-text {
+    display: none;
+  }
 }
