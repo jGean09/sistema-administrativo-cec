@@ -186,7 +186,7 @@ export default function ListaSocios() {
                     Editar
                   </button>
                   <button
-                    onClick={() => window.open(`http://localhost:3001/api/socios/${s.id}/ficha`, '_blank')}
+                    onClick={() => window.open(`${process.env.REACT_APP_API_URL}/socios/${s.id}/ficha`, '_blank')}
                     style={{ border: 'none', background: 'none', color: '#8B0000', cursor: 'pointer', textDecoration: 'underline', fontSize: '14px' }}
                   >
                     Ficha PDF
