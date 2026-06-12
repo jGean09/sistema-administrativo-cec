@@ -1,5 +1,3 @@
-// server.js — versão corrigida e blindada
-
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -10,58 +8,51 @@ const routes = require('./routes');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Log de diagnóstico — confirma qual valor está carregado no ambiente do Render
-console.log('✅ FRONTEND_URL carregado:', process.env.FRONTEND_URL);
-console.log('✅ NODE_ENV:', process.env.NODE_ENV);
+console.log('✅ FRONTEND_URL:', process.env.FRONTEND_URL);
 
 const origensPermitidas = [
-  'http://localhost:3000',
-  'http://localhost:3001',
   'https://sistema-administrativo-cec.vercel.app',
-  // FRONTEND_URL como fallback (caso esteja correto no painel do Render)
   process.env.FRONTEND_URL,
-].filter(Boolean); // Remove valores undefined/null
-
-console.log('✅ Origens permitidas:', origensPermitidas);
+].filter(Boolean);
 
 const corsOptions = {
   origin: function (origin, callback) {
-    // Permite requisições sem origin (Postman, curl, health checks)
-    if (!origin) return callback(null, true);
-
-    if (origensPermitidas.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.warn(`🚫 CORS bloqueou origem: ${origin}`);
-      callback(new Error(`Origem não permitida pelo CORS: ${origin}`));
+    if (!origin || origensPermitidas.includes(origin)) {
+      return callback(null, true);
     }
+    console.warn(`🚫 CORS bloqueou: ${origin}`);
+    callback(new Error(`Origem bloqueada: ${origin}`));
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
 };
 
-// ⚠️ CORS deve vir ANTES do Helmet
+// CORS e preflight ANTES de tudo
 app.use(cors(corsOptions));
-
-// Responde ao preflight OPTIONS de forma explícita (resolve conflitos com Helmet)
 app.options('*', cors(corsOptions));
 
 // Helmet depois do CORS
-app.use(helmet({
-  crossOriginResourcePolicy: { policy: 'cross-origin' }, // Evita conflito com uploads
-}));
-
+app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.disable('x-powered-by');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Instrui o Cloudflare/CDN a não cachear nada da API
+app.use('/api', (req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  res.set('CDN-Cache-Control', 'no-store');
+  res.set('Cloudflare-CDN-Cache-Control', 'no-store');
+  next();
+});
+
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 app.get('/health', (req, res) => {
   res.json({
     status: 'ok',
     ambiente: process.env.NODE_ENV,
-    frontend_url: process.env.FRONTEND_URL, // Expõe para diagnóstico
+    frontend_url: process.env.FRONTEND_URL,
     origens: origensPermitidas,
   });
 });
@@ -74,8 +65,6 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Erro interno do servidor.' });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor rodando na porta ${PORT}`);
-});
+app.listen(PORT, () => console.log(`🚀 Servidor na porta ${PORT}`));
 
 module.exports = app;
