@@ -1,5 +1,3 @@
-/* --- Classes Adicionais para ListaSocios --- */
-
 .lista-container {
   padding: 20px;
 }
@@ -96,7 +94,8 @@
   background: #fff;
   border-radius: 12px;
   border: 1px solid #eee;
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .admin-table {
@@ -146,7 +145,6 @@
   gap: 12px;
 }
 
-/* Status Dinâmicos */
 .status-badge {
   padding: 3px 10px;
   border-radius: 20px;
@@ -185,4 +183,37 @@
   cursor: pointer;
   text-decoration: underline;
   font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .lista-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .btn-novo-socio {
+    width: 100%;
+    text-align: center;
+  }
+
+  .filtros-container {
+    flex-direction: column;
+  }
+
+  .filtro-input,
+  .filtro-select {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .btn-limpar-filtros {
+    width: 100%;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
 }
