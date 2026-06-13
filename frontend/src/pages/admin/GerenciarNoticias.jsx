@@ -13,7 +13,7 @@ const CATEGORIAS = [
 const INITIAL = { titulo: '', conteudo: '', categoria: 'aviso', visibilidade: 'publica' };
 
 // URL base da API — usada para montar o link de download dos anexos PDF.
-// A rota /noticias/anexos/:id serve o PDF direto pelo banco (base64 → buffer).
+// A rota /noticias/anexos/:id serve o PDF direto pelo banco (base64 -> buffer).
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
 
 export default function GerenciarNoticias() {
@@ -46,7 +46,7 @@ export default function GerenciarNoticias() {
     const data = new FormData();
     Object.entries(form).forEach(([k, v]) => data.append(k, v));
     if (imagem) data.append('imagem', imagem);
-    // Cada PDF é appendado com a mesma chave 'anexos' — multer agrupa em array
+    // Cada PDF e appendado com a mesma chave 'anexos' — multer agrupa em array
     anexos.forEach(file => data.append('anexos', file));
 
     try {
@@ -54,14 +54,14 @@ export default function GerenciarNoticias() {
         await api.put(`/noticias/${editandoId}`, data, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
-        alert('Notícia atualizada!');
+        alert('Noticia atualizada!');
       } else {
         await api.post('/noticias', data, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
-        alert('Notícia publicada!');
+        alert('Noticia publicada!');
       }
-      // Limpa o formulário após salvar
+      // Limpa o formulario apos salvar
       setForm(INITIAL);
       setImagem(null);
       setAnexos([]);
@@ -78,18 +78,18 @@ export default function GerenciarNoticias() {
   const handleEditar = (n) => {
     setForm({ titulo: n.titulo, conteudo: n.conteudo, categoria: n.categoria, visibilidade: n.visibilidade });
     setEditandoId(n.id);
-    setAnexos([]); // na edição, novos PDFs são adicionados; os existentes ficam no banco
+    setAnexos([]); // na edicao, novos PDFs sao adicionados; os existentes ficam no banco
     setMostrarForm(true);
     window.scrollTo(0, 0);
   };
 
   const handleExcluir = async (id) => {
-    if (!window.confirm('Excluir esta notícia?')) return;
+    if (!window.confirm('Excluir esta noticia?')) return;
     await api.delete(`/noticias/${id}`);
     carregar();
   };
 
-  // Remove um anexo PDF da seleção local antes de enviar (ainda não foi ao banco)
+  // Remove um anexo PDF da selecao local antes de enviar (ainda nao foi ao banco)
   const removerAnexoLocal = (index) => {
     setAnexos(prev => prev.filter((_, i) => i !== index));
   };
@@ -100,23 +100,22 @@ export default function GerenciarNoticias() {
   return (
     <div className="noticias-container">
       <div className="noticias-header">
-        <h2 className="noticias-title">Gerenciar Notícias</h2>
+        <h2 className="noticias-title">Gerenciar Noticias</h2>
         <button
           className="btn-nova-noticia"
           onClick={() => { setMostrarForm(!mostrarForm); setForm(INITIAL); setEditandoId(null); setAnexos([]); }}
         >
-          {mostrarForm ? 'Cancelar' : '+ Nova Notícia'}
+          {mostrarForm ? 'Cancelar' : '+ Nova Noticia'}
         </button>
       </div>
 
-      {/* FORMULÁRIO DE CRIAÇÃO / EDIÇÃO */}
       {mostrarForm && (
         <div className="form-container">
-          <h3 className="form-title">{editandoId ? 'Editar Notícia' : 'Nova Notícia'}</h3>
+          <h3 className="form-title">{editandoId ? 'Editar Noticia' : 'Nova Noticia'}</h3>
           <form onSubmit={handleSubmit} className="noticias-form">
 
             <div>
-              <label className="form-label">Título *</label>
+              <label className="form-label">Titulo *</label>
               <input
                 className="form-input"
                 value={form.titulo}
@@ -131,12 +130,12 @@ export default function GerenciarNoticias() {
                 {CATEGORIAS.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
               </select>
               <small className="form-help-text">
-                Visibilidade: <strong>{form.visibilidade === 'publica' ? '🌐 Pública (todos veem)' : '🔒 Apenas sócios'}</strong>
+                Visibilidade: <strong>{form.visibilidade === 'publica' ? 'Publica (todos veem)' : 'Apenas socios'}</strong>
               </small>
             </div>
 
             <div>
-              <label className="form-label">Conteúdo *</label>
+              <label className="form-label">Conteudo *</label>
               <textarea
                 className="form-input form-textarea"
                 value={form.conteudo}
@@ -146,7 +145,6 @@ export default function GerenciarNoticias() {
               />
             </div>
 
-            {/* Campo de imagem de capa — aceita apenas imagens */}
             <div>
               <label className="form-label">Imagem de Capa (opcional)</label>
               <input
@@ -157,9 +155,8 @@ export default function GerenciarNoticias() {
               />
             </div>
 
-            {/* Campo de anexos PDF — múltipla seleção, aceita apenas PDF */}
             <div>
-              <label className="form-label">Anexos PDF (opcional — até 5 arquivos)</label>
+              <label className="form-label">Anexos PDF (opcional - ate 5 arquivos)</label>
               <input
                 type="file"
                 accept="application/pdf"
@@ -167,18 +164,17 @@ export default function GerenciarNoticias() {
                 onChange={e => setAnexos(prev => [...prev, ...Array.from(e.target.files)])}
                 className="form-file-input"
               />
-              {/* Lista dos PDFs selecionados com botão de remoção individual */}
               {anexos.length > 0 && (
                 <ul className="anexos-preview">
                   {anexos.map((f, i) => (
                     <li key={i} className="anexo-preview-item">
-                      <span>📄 {f.name}</span>
+                      <span>{f.name}</span>
                       <button
                         type="button"
                         className="btn-remover-anexo"
                         onClick={() => removerAnexoLocal(i)}
                       >
-                        ✕
+                        X
                       </button>
                     </li>
                   ))}
@@ -187,19 +183,17 @@ export default function GerenciarNoticias() {
             </div>
 
             <button type="submit" disabled={loading} className="btn-submit">
-              {loading ? 'Salvando...' : editandoId ? 'Salvar Alterações' : 'Publicar Notícia'}
+              {loading ? 'Salvando...' : editandoId ? 'Salvar Alteracoes' : 'Publicar Noticia'}
             </button>
           </form>
         </div>
       )}
 
-      {/* LISTA DE NOTÍCIAS */}
       <div className="noticias-list">
-        {noticias.length === 0 && <p className="empty-text">Nenhuma notícia publicada.</p>}
+        {noticias.length === 0 && <p className="empty-text">Nenhuma noticia publicada.</p>}
         {noticias.map(n => (
           <div key={n.id} className="noticia-card">
 
-            {/* Imagem de capa — agora usa imagem_base64 (data URL) direto no src */}
             {n.imagem_base64 && (
               <img src={n.imagem_base64} alt="" className="noticia-img" />
             )}
@@ -210,27 +204,25 @@ export default function GerenciarNoticias() {
                   {labelCategoria[n.categoria] || n.categoria}
                 </span>
                 <span className={`badge-base ${n.visibilidade === 'publica' ? 'badge-publica' : 'badge-socios'}`}>
-                  {n.visibilidade === 'publica' ? '🌐 Pública' : '🔒 Sócios'}
+                  {n.visibilidade === 'publica' ? 'Publica' : 'Socios'}
                 </span>
               </div>
 
               <strong className="noticia-titulo">{n.titulo}</strong>
               <p className="noticia-resumo">{n.conteudo.substring(0, 120)}...</p>
-              <small className="noticia-meta">Por {n.autor_nome} — {new Date(n.created_at).toLocaleDateString('pt-BR')}</small>
+              <small className="noticia-meta">Por {n.autor_nome} em {new Date(n.created_at).toLocaleDateString('pt-BR')}</small>
 
-              {/* Lista de anexos PDF vinculados à notícia.
-                  Cada link abre a rota /noticias/anexos/:id que serve o PDF inline. */}
               {n.anexos && n.anexos.length > 0 && (
                 <div className="anexos-lista">
                   {n.anexos.map(a => (
-                    
+                    <a
                       key={a.id}
                       href={`${API_URL}/noticias/anexos/${a.id}`}
                       target="_blank"
                       rel="noreferrer"
                       className="anexo-link"
                     >
-                      📄 {a.nome}
+                      {a.nome}
                     </a>
                   ))}
                 </div>
