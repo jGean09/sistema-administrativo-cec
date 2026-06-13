@@ -82,3 +82,32 @@
   border-radius: 8px;
   cursor: pointer;
 }
+
+@media (max-width: 768px) {
+  .admin-container {
+    padding: 12px;
+  }
+
+  .admin-section {
+    padding: 16px;
+  }
+
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-field.full {
+    grid-column: span 1;
+  }
+
+  .admin-actions {
+    flex-direction: column-reverse;
+  }
+
+  .btn-save,
+  .btn-cancel {
+    width: 100%;
+    text-align: center;
+    padding: 14px;
+  }
+}
