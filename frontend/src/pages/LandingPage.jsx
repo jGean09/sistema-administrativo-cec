@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import api from '../services/api';
 import './LandingPage.css';
 
-import logoCEC from '../assets/logo.png'; 
+import logoCEC from '../assets/logo.png';
 
 const LINK_INSCRICAO = "https://docs.google.com/forms/d/e/1FAIpQLSfxMGO9G5SIgzc49i0dJUXGxSt-PswSOZ7RprpwweRsw_CaFQ/viewform?usp=sharing&ouid=100203948435918790425";
 
@@ -29,11 +29,11 @@ const LandingPage = () => {
 
   return (
     <div className="landing-wrapper">
+
       {/* NAVBAR */}
       <nav className="navbar">
         <div className="nav-content">
           <div className="brand">
-            {/* 👇 2. Usando a variável da logo importada no src */}
             <img src={logoCEC} alt="Logo CEC" className="navbar-logo" />
             <div className="brand-text">
               <span className="main-title">Casa do Estudante de Caicó</span>
@@ -75,9 +75,10 @@ const LandingPage = () => {
           <div className="news-grid">
             {noticias.map(n => (
               <article key={n.id} className="public-news-card" onClick={() => abrirModal(n)}>
-                {n.imagem_url && (
+                {/* imagem_base64 é uma data URL completa — usada direto no src */}
+                {n.imagem_base64 && (
                   <div className="card-img-wrap">
-                    <img src={`http://localhost:3001${n.imagem_url}`} alt="" />
+                    <img src={n.imagem_base64} alt="" />
                   </div>
                 )}
                 <div className="card-body">
@@ -102,13 +103,12 @@ const LandingPage = () => {
         <div className="modal-overlay" onClick={fecharModal}>
           <div className="modal-box" onClick={e => e.stopPropagation()}>
             <button className="modal-close" onClick={fecharModal}>✕</button>
-            {modalAberto.imagem_url && (
-              <img
-                src={`http://localhost:3001${modalAberto.imagem_url}`}
-                alt=""
-                className="modal-img"
-              />
+
+            {/* Imagem de capa no modal — data URL base64 direto no src */}
+            {modalAberto.imagem_base64 && (
+              <img src={modalAberto.imagem_base64} alt="" className="modal-img" />
             )}
+
             <div className="modal-body">
               <span className="card-badge" style={{ background: COR_CATEGORIA[modalAberto.categoria] || '#1b3d2f' }}>
                 {modalAberto.categoria || 'Geral'}
@@ -129,6 +129,7 @@ const LandingPage = () => {
           <p className="copyright">© 2026 Sistema Administrativo CEC</p>
         </div>
       </footer>
+
     </div>
   );
 };
