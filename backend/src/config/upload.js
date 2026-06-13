@@ -1,27 +1,30 @@
 const multer = require('multer');
-const path = require('path');
-const fs = require('node:fs');
 
-const dir = path.join(__dirname, '../../uploads');
-if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+// ============================================================
+// PADRÃO: Configuration Object
+// SOLID S — Single Responsibility: este módulo tem uma única
+//           responsabilidade — configurar o middleware de upload.
+//
+// MOTIVO DA MUDANÇA: diskStorage salvava arquivos no disco do
+// servidor (Render). O Render tem filesystem EFÊMERO — os arquivos
+// somem a cada novo deploy ou reinício. Por isso as imagens
+// "sumiam". A solução é memoryStorage: o arquivo fica em buffer
+// na memória (req.file.buffer) e é convertido para base64 para
+// persistir no banco de dados PostgreSQL.
+// ============================================================
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, dir),
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const prefix = file.mimetype.startsWith('image/') ? 'noticia' : 'anexo';
-    cb(null, `${prefix}_${Date.now()}${ext}`);
-  }
-});
+const storage = multer.memoryStorage();
 
 const upload = multer({
   storage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB por arquivo
   fileFilter: (req, file, cb) => {
-    const tiposPermitidos = /jpeg|jpg|png|webp|pdf|doc|docx|xls|xlsx|txt/;
-    const ext = path.extname(file.originalname).toLowerCase().replace('.', '');
+    // Aceita apenas imagens e PDF — doc/xls removidos pois o
+    // sistema só exibe/abre PDFs no frontend.
+    const tiposPermitidos = /jpeg|jpg|png|webp|pdf/;
+    const ext = file.originalname.split('.').pop().toLowerCase();
     if (tiposPermitidos.test(ext)) cb(null, true);
-    else cb(new Error('Tipo de arquivo não permitido.'));
+    else cb(new Error('Tipo de arquivo não permitido. Use imagens ou PDF.'));
   }
 });
 
